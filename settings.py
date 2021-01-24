@@ -1,0 +1,10 @@
+path_to_train_data = '../train'         # path to train dataset
+path_to_val_data = '../val'
+path_to_model = '../chk'
+path_to_log = '../log.txt'
+path_to_fig = '../fig.png'
+max_seq_len = 500                       # max sequence length
+batch_size = 2                          # batch size
+num_workers = 4                         # num workers
+gpu_ids = [0, 1]                        # gpu ids
+num_epochs = 100                        # train epochs
