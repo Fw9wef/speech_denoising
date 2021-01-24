@@ -30,9 +30,11 @@ class PositionalEncoder(nn.Module):
     def __init__(self, d_model, max_seq_len=max_seq_len):
         super().__init__()
         self.d_model = d_model
+        pe = self.calc_pos()
+        self.register_buffer('pe', pe)
 
-    def calc_pos(self, x):
-        seq_len = x.size(0)
+    def calc_pos(self):
+        seq_len = max_seq_len+1
         pe = torch.zeros(seq_len, self.d_model)
         for pos in range(seq_len):
             for i in range(0, self.d_model, 2):
@@ -44,14 +46,12 @@ class PositionalEncoder(nn.Module):
         return pe
 
     def forward(self, x):
-        pe = self.calc_pos(x)
         x = x * math.sqrt(self.d_model)
-        x = x + pe
+        x = x + self.pe[:x.size(2)]
         return x
 
     def unforward(self, x):
-        pe = self.calc_pos(x)
-        x = x - pe
+        x = x - self.pe[:x.size(2)]
         x = x / math.sqrt(self.d_model)
         return x
 
