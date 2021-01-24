@@ -69,10 +69,12 @@ class Model(nn.Module):
         src = self.pe(input['noisy'])
         tgt = self.pe(input['clean'])
 
-        pad_mask = input['tgt_pad_mask']
+        tgt_pad_mask = input['tgt_pad_mask']
+        src_pad_mask = input['src_pad_mask']
         tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0))
 
-        preds = self.transformer(src, tgt, tgt_mask=tgt_mask, tgt_key_padding_mask=pad_mask)
+        preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
+                                 tgt_key_padding_mask=tgt_pad_mask)
         preds = self.lin(preds)
 
         loss = self.criterion(preds[:-1], input['clean'][1:])
