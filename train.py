@@ -14,20 +14,26 @@ if len(gpu_ids) > 1:
 optimizer = torch.optim.Adam(model.parameters())
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
 dataset = get_dataloader()
+train_len = len(dataset)
 val_dataset = get_val_dataloader()
+val_len = len(val_dataset)
 
 log = Log()
 for epoch_n in range(1, num_epochs+1):
 
     train_loss = 0
-    for i, batch in tqdm(enumerate(dataset)):
+    batches = enumerate(dataset)
+    for _ in tqdm(range(train_len)):
+        i, batch = next(batches)
         loss = model(batch)
         loss.backward()
         optimizer.step()
         train_loss += loss.cpu().item()
 
     val_loss = 0
-    for i, batch in tqdm(enumerate(val_dataset)):
+    batches = enumerate(val_dataset)
+    for _ in tqdm(range(val_len)):
+        i, batch = next(batches)
         preds, loss = model.predict(batch)
         val_loss += loss.cpu().item()
 
