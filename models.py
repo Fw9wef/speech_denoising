@@ -56,8 +56,8 @@ class PositionalEncoder(nn.Module):
 class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
-        self.transformer = Transformer(d_model=80, dim_feedforward=512, nhead=12,
-                                       num_encoder_layers=12, num_decoder_layers=12)
+        self.transformer = Transformer(d_model=80, dim_feedforward=512, nhead=8,
+                                       num_encoder_layers=8, num_decoder_layers=8)
         self.lin = nn.Linear(80, 80)
         self.pe = PositionalEncoder(d_model=80)
         self.criterion = nn.MSELoss(reduction='none')
