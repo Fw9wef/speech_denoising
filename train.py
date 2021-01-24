@@ -3,6 +3,7 @@ from models import Model
 from data import get_dataloader, get_val_dataloader
 from settings import num_epochs, gpu_ids, path_to_model
 from utils import Log
+from tqdm import tqdm
 
 
 device = torch.device(gpu_ids[0])
@@ -19,14 +20,14 @@ log = Log()
 for epoch_n in range(1, num_epochs+1):
 
     train_loss = 0
-    for i, batch in enumerate(dataset):
+    for i, batch in tqdm(enumerate(dataset)):
         loss = model(batch)
         loss.backward()
         optimizer.step()
         train_loss += loss.cpu().item()
 
     val_loss = 0
-    for i, batch in enumerate(val_dataset):
+    for i, batch in tqdm(enumerate(val_dataset)):
         preds, loss = model.predict(batch)
         val_loss += loss.cpu().item()
 
