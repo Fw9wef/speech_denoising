@@ -47,11 +47,11 @@ class PositionalEncoder(nn.Module):
 
     def forward(self, x):
         x = x * math.sqrt(self.d_model)
-        x = x + self.pe[:x.size(2)]
+        x = x + self.pe[:x.size(0)]
         return x
 
     def unforward(self, x):
-        x = x - self.pe[:x.size(2)]
+        x = x - self.pe[:x.size(0)]
         x = x / math.sqrt(self.d_model)
         return x
 
