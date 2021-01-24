@@ -30,10 +30,10 @@ class AlignedDataset(Dataset):
     def __init__(self, path_to_data):
         self.noisy_data, self.clean_data = parse_pairs(path_to_data)
         self.len_ = len(self.noisy_data)
-        self.means_clear = torch.tensor(means_clear).reshape(1, 1, len(means_clear))
-        self.means_noisy = torch.tensor(means_noisy).reshape(1, 1, len(means_clear))
-        self.std_clear = torch.tensor(std_clear).reshape(1, 1, len(means_clear))
-        self.std_noisy = torch.tensor(std_noisy).reshape(1, 1, len(means_clear))
+        self.means_clear = torch.tensor(means_clear).unsqueeze(0)
+        self.means_noisy = torch.tensor(means_noisy).unsqueeze(0)
+        self.std_clear = torch.tensor(std_clear).unsqueeze(0)
+        self.std_noisy = torch.tensor(std_noisy).unsqueeze(0)
 
     def __len__(self):
         return self.len_
