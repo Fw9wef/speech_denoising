@@ -76,6 +76,7 @@ class Model(nn.Module):
     def forward(self, input):
         print(self.src.device)
         self.src = input['noisy']
+        print(self.src.device)
         self.tgt = input['clean']
         self.src_pad_mask = input['src_pad_mask']
         self.tgt_pad_mask = input['tgt_pad_mask']
