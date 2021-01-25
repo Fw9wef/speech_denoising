@@ -1,4 +1,5 @@
 import torch
+from torch.autograd import Variable
 from models import Model
 from data import get_dataloader, get_val_dataloader
 from settings import num_epochs, gpu_ids, path_to_model
@@ -25,7 +26,8 @@ for epoch_n in range(1, num_epochs+1):
     batches = enumerate(dataset)
     for _ in tqdm(range(train_len//1000)):
         i, batch = next(batches)
-        loss = model(batch)
+        loss = model(Variable(batch['noisy']), Variable(batch['clean']),
+                     Variable(batch['src_pad_mask']), Variable(batch['tgt_pad_mask']))
         loss.backward()
         optimizer.step()
         train_loss += loss.cpu().item()
@@ -34,7 +36,7 @@ for epoch_n in range(1, num_epochs+1):
     batches = enumerate(val_dataset)
     for _ in tqdm(range(val_len)):
         i, batch = next(batches)
-        _, loss = model.predict(batch)
+        _, loss = model.predict(Variable(batch['noisy']), Variable(batch['clean']))
         val_loss += loss.cpu().item()
 
     torch.save(model.state_dict(), path_to_model+str(epoch_n))

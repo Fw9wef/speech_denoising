@@ -68,24 +68,9 @@ class Model(nn.Module):
         self.pe = PositionalEncoder(d_model=80)
         self.criterion = nn.MSELoss(reduction='none')
 
-        self.register_buffer('src', torch.zeros((4, 500, 80)))
-        self.register_buffer('tgt', torch.zeros((4, 500, 80)))
-        self.register_buffer('src_pad_mask', torch.zeros((4, 500)))
-        self.register_buffer('tgt_pad_mask', torch.zeros((4, 500)))
-
-    def forward(self, input):
-        print(self.src.device)
-        self.src = input['noisy']
-        print(self.src.device)
-        self.tgt = input['clean']
-        self.src_pad_mask = input['src_pad_mask']
-        self.tgt_pad_mask = input['tgt_pad_mask']
-
-        src = self.pe(self.src.transpose(1, 0))
-        tgt = self.pe(self.tgt.transpose(1, 0))
-
-        src_pad_mask = self.src_pad_mask
-        tgt_pad_mask = self.tgt_pad_mask
+    def forward(self, src, tgt, src_pad_mask, tgt_pad_mask):
+        src = self.pe(src.transpose(1, 0))
+        tgt = self.pe(tgt.transpose(1, 0))
         tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0))
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
@@ -103,14 +88,14 @@ class Model(nn.Module):
 
         return loss
 
-    def predict(self, input):
-        src = self.pe(input['noisy'].to(device).transpose(1, 0))
+    def predict(self, src, tgt):
+        src = self.pe(src.transpose(1, 0))
         preds = self.transformer.fast_infer(src)
         preds = self.lin(preds)
 
         loss = None
-        if input['clean']:
-            loss = self.criterion(preds, input['clean'][1:]).sum()
+        if tgt:
+            loss = self.criterion(preds.transpose(1, 0), tgt[:, 1:]).sum()
 
         preds = self.pe.unforward(preds)
 
