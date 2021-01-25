@@ -6,5 +6,5 @@ path_to_fig = './fig.png'
 max_seq_len = 500                       # max sequence length
 batch_size = 4                          # batch size
 num_workers = 2                         # num workers
-gpu_ids = [5]                           # gpu ids
+gpu_ids = [5, 7]                           # gpu ids
 num_epochs = 100                        # train epochs
