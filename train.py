@@ -1,10 +1,10 @@
 import torch
-from torch.autograd import Variable
 from models import Model
 from data import get_dataloader, get_val_dataloader
 from settings import num_epochs, gpu_ids, path_to_model
 from utils import Log
 from tqdm import tqdm
+import os
 
 
 device = torch.device(gpu_ids[0])
