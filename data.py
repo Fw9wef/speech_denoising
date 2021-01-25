@@ -94,4 +94,4 @@ def get_dataloader():
 
 
 def get_val_dataloader():
-    return DataLoader(AlignedDataset(path_to_data=path_to_val_data), batch_size=1)
+    return DataLoader(AlignedDataset(path_to_data=path_to_val_data), batch_size=batch_size*2)

@@ -28,6 +28,7 @@ for epoch_n in range(1, num_epochs+1):
         i, batch = next(batches)
         loss = model(batch['noisy'].to(device), batch['clean'].to(device),
                      batch['src_pad_mask'].to(device), batch['tgt_pad_mask'].to(device))
+        print(loss)
         loss = loss.mean()
         print(loss)
         loss.backward()
@@ -38,7 +39,9 @@ for epoch_n in range(1, num_epochs+1):
     batches = enumerate(val_dataset)
     for _ in tqdm(range(val_len)):
         i, batch = next(batches)
-        _, loss = model.predict(batch['noisy'].to(device), batch['clean'].to(device))
+        loss = model(batch['noisy'].to(device), batch['clean'].to(device),
+                     batch['src_pad_mask'].to(device), batch['tgt_pad_mask'].to(device))
+        loss = loss.mean()
         val_loss += loss.cpu().item()
 
     torch.save(model.state_dict(), path_to_model+str(epoch_n))
