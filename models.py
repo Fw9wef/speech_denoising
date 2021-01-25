@@ -74,6 +74,7 @@ class Model(nn.Module):
         self.register_buffer('tgt_pad_mask', torch.zeros((4, 500)))
 
     def forward(self, input):
+        print(self.src.device)
         self.src = input['noisy']
         self.tgt = input['clean']
         self.src_pad_mask = input['src_pad_mask']
