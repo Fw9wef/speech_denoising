@@ -7,7 +7,6 @@ from tqdm import tqdm
 
 
 device = torch.device(gpu_ids[0])
-print(device)
 model = Model().to(device)
 if len(gpu_ids) > 1:
     model = torch.nn.DataParallel(model, device_ids=gpu_ids)

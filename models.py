@@ -66,30 +66,26 @@ class Model(nn.Module):
         self.criterion = nn.MSELoss(reduction='none')
 
     def forward(self, input):
-        print(input['noisy'].size(), input['clean'].size())
-        src = self.pe(input['noisy'])
-        tgt = self.pe(input['clean'])
+        src = self.pe(input['noisy'].transpose(1, 0, 2))
+        tgt = self.pe(input['clean'].transpose(1, 0, 2))
 
         tgt_pad_mask = input['tgt_pad_mask']
         src_pad_mask = input['src_pad_mask']
         tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0))
-
-        print(src.size(), tgt.size())
-        print(tgt_pad_mask.size(), src_pad_mask.size())
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
                                  tgt_key_padding_mask=tgt_pad_mask)
         preds = self.lin(preds)
 
         loss = self.criterion(preds[:-1], input['clean'][1:])
-        loss = loss * pad_mask[1:]
-        loss = loss.sum(dim=0)/pad_mask[1:].sum(dim=0)
+        loss = loss * tgt_pad_mask[1:]
+        loss = loss.sum(dim=0)/tgt_pad_mask[1:].sum(dim=0)
         loss = loss.mean()
 
         return loss
 
     def predict(self, input):
-        src = self.pe(input['noisy'])
+        src = self.pe(input['noisy'].transpose(1, 0, 2))
         preds = self.transformer.fast_infer(src)
         preds = self.lin(preds)
 
@@ -99,4 +95,4 @@ class Model(nn.Module):
 
         preds = self.pe.unforward(preds)
 
-        return preds, loss
+        return preds.transpose(1, 0, 2), loss

@@ -82,9 +82,9 @@ def collate_fn(batch):
     src_pad_mask_batch = torch.stack(src_pad_mask_batch, dim=0)
     clean_batch = torch.stack(clean_batch, dim=1)
     tgt_pad_mask_batch = torch.stack(tgt_pad_mask_batch, dim=0)
-    return {'noisy': noisy_batch,
+    return {'noisy': noisy_batch.transpose(1, 0, 2),
             'src_pad_mask': src_pad_mask_batch,
-            'clean': clean_batch,
+            'clean': clean_batch.transpose(1, 0, 2),
             'tgt_pad_mask': tgt_pad_mask_batch}
 
 
