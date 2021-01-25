@@ -86,7 +86,7 @@ class Model(nn.Module):
         loss = self.criterion(preds[:, :-1], tgt[:, 1:])
         loss = loss * tgt_pad_mask[:, 1:].unsqueeze(2)
         print(loss)
-        loss = loss.sum(dim=1).sum(dim=1) / tgt_pad_mask[:, 1:].sum(dim=1)
+        loss = loss.sum(dim=1).sum(dim=1) / tgt_pad_mask[:, 1:].sum(dim=1) / preds.size(2)
         print(loss)
 
         return loss
