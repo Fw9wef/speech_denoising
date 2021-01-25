@@ -42,7 +42,7 @@ for epoch_n in range(1, num_epochs+1):
         loss = loss.mean()
         val_loss += loss.cpu().item()
 
-    torch.save(model.state_dict(), path_to_model+str(epoch_n))
+    torch.save(model.state_dict(), os.path.join(path_to_model, 'model'+str(epoch_n)))
     log.write_log(epoch_n, train_loss, val_loss)
     scheduler.step()
 
