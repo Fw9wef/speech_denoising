@@ -40,7 +40,7 @@ class AlignedDataset(Dataset):
 
     @staticmethod
     def pad_tgt(tgt):
-        mask = [True] + [False for _ in range(tgt.size(0))] + [True for _ in range(max_seq_len - tgt.size(0))]
+        mask = [False] + [False for _ in range(tgt.size(0))] + [True for _ in range(max_seq_len - tgt.size(0))]
         mask = torch.tensor(mask, dtype=torch.bool)
 
         pad = torch.zeros(1, tgt.size(1))
