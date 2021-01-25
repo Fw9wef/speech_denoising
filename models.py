@@ -78,10 +78,12 @@ class Model(nn.Module):
         preds = self.lin(preds)
 
         preds = preds.transpose(1, 0)
+        print(preds)
         tgt = tgt.transpose(1, 0)
         tgt_pad_mask = 1 - tgt_pad_mask.float()
 
         loss = self.criterion(preds[:, :-1], tgt[:, 1:])
+        print(loss)
         loss = loss * tgt_pad_mask[:, 1:].unsqueeze(2)
         loss = loss.sum(dim=1).sum(dim=1) / tgt_pad_mask[:, 1:].sum(dim=1)
         loss = loss.mean()
