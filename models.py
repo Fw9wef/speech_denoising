@@ -66,8 +66,8 @@ class Model(nn.Module):
         self.criterion = nn.MSELoss(reduction='none')
 
     def forward(self, input):
-        src = self.pe(input['noisy'].transpose(1, 0, 2))
-        tgt = self.pe(input['clean'].transpose(1, 0, 2))
+        src = self.pe(input['noisy'].transpose(1, 0))
+        tgt = self.pe(input['clean'].transpose(1, 0))
 
         tgt_pad_mask = input['tgt_pad_mask']
         src_pad_mask = input['src_pad_mask']
@@ -85,7 +85,7 @@ class Model(nn.Module):
         return loss
 
     def predict(self, input):
-        src = self.pe(input['noisy'].transpose(1, 0, 2))
+        src = self.pe(input['noisy'].transpose(1, 0))
         preds = self.transformer.fast_infer(src)
         preds = self.lin(preds)
 
@@ -95,4 +95,4 @@ class Model(nn.Module):
 
         preds = self.pe.unforward(preds)
 
-        return preds.transpose(1, 0, 2), loss
+        return preds.transpose(1, 0), loss

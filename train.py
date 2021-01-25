@@ -34,7 +34,7 @@ for epoch_n in range(1, num_epochs+1):
     batches = enumerate(val_dataset)
     for _ in tqdm(range(val_len)):
         i, batch = next(batches)
-        preds, loss = model.predict(batch)
+        _, loss = model.predict(batch)
         val_loss += loss.cpu().item()
 
     torch.save(model.state_dict(), path_to_model+str(epoch_n))
