@@ -68,10 +68,12 @@ class Model(nn.Module):
         self.pe = PositionalEncoder(d_model=80)
         self.criterion = nn.MSELoss(reduction='none')
 
+        self.register_buffer('tgt_mask', self.transformer.generate_square_subsequent_mask(max_seq_len))
+
     def forward(self, src, tgt, src_pad_mask, tgt_pad_mask):
         src = self.pe(src.transpose(1, 0))
         tgt = self.pe(tgt.transpose(1, 0))
-        tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0)).to(tgt.device)
+        tgt_mask = self.tgt_mask[:tgt.size(0), :tgt.size(0)]
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
                                  tgt_key_padding_mask=tgt_pad_mask)
