@@ -96,3 +96,4 @@ class Model(nn.Module):
         preds = self.pe.unforward(preds)
 
         return preds.transpose(1, 0), loss
+
