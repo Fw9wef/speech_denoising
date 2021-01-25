@@ -73,6 +73,10 @@ class Model(nn.Module):
         src_pad_mask = input['src_pad_mask']
         tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0))
 
+        print(src.size(), tgt.size())
+        print(tgt_pad_mask.size(), src_pad_mask.size())
+        print(tgt_mask.size())
+
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
                                  tgt_key_padding_mask=tgt_pad_mask)
         preds = self.lin(preds)
