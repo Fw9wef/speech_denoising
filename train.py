@@ -28,6 +28,7 @@ for epoch_n in range(1, num_epochs+1):
         i, batch = next(batches)
         loss = model(batch['noisy'].to(device), batch['clean'].to(device),
                      batch['src_pad_mask'].to(device), batch['tgt_pad_mask'].to(device))
+        print(loss)
         loss.backward()
         optimizer.step()
         train_loss += loss.cpu().item()
