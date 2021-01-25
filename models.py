@@ -60,10 +60,10 @@ class Model(nn.Module):
     def __init__(self):
         super(Model, self).__init__()
         self.transformer = Transformer(d_model=80, dim_feedforward=512, nhead=8,
-                                       num_encoder_layers=8, num_decoder_layers=8)
-        self.lin = nn.Linear(80, 80)
-        self.pe = PositionalEncoder(d_model=80)
-        self.criterion = nn.MSELoss(reduction='none')
+                                       num_encoder_layers=8, num_decoder_layers=8).cuda()
+        self.lin = nn.Linear(80, 80).cuda()
+        self.pe = PositionalEncoder(d_model=80).cuda()
+        self.criterion = nn.MSELoss(reduction='none').cuda()
 
     def forward(self, input):
         src = self.pe(input['noisy'].cuda().transpose(1, 0))
@@ -71,7 +71,7 @@ class Model(nn.Module):
 
         tgt_pad_mask = input['tgt_pad_mask'].cuda()
         src_pad_mask = input['src_pad_mask'].cuda()
-        tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0))
+        tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0)).cuda()
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
                                  tgt_key_padding_mask=tgt_pad_mask)
