@@ -68,13 +68,23 @@ class Model(nn.Module):
         self.pe = PositionalEncoder(d_model=80)
         self.criterion = nn.MSELoss(reduction='none')
 
-    def forward(self, input):
-        src = self.pe(input['noisy'].to(device).transpose(1, 0))
-        tgt = self.pe(input['clean'].to(device).transpose(1, 0))
+        self.register_buffer('src', torch.zeros((4, 500, 80)))
+        self.register_buffer('tgt', torch.zeros((4, 500, 80)))
+        self.register_buffer('src_pad_mask', torch.zeros((4, 500)))
+        self.register_buffer('tgt_pad_mask', torch.zeros((4, 500)))
 
-        tgt_pad_mask = input['tgt_pad_mask'].to(device)
-        src_pad_mask = input['src_pad_mask'].to(device)
-        tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0)).to(device)
+    def forward(self, input):
+        self.src = input['noisy']
+        self.tgt = input['clean']
+        self.src_pad_mask = input['src_pad_mask']
+        self.tgt_pad_mask = input['tgt_pad_mask']
+
+        src = self.pe(self.src.transpose(1, 0))
+        tgt = self.pe(self.tgt.transpose(1, 0))
+
+        src_pad_mask = self.src_pad_mask
+        tgt_pad_mask = self.tgt_pad_mask
+        tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0))
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
                                  tgt_key_padding_mask=tgt_pad_mask)

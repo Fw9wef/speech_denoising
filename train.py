@@ -23,7 +23,7 @@ for epoch_n in range(1, num_epochs+1):
 
     train_loss = 0
     batches = enumerate(dataset)
-    for _ in tqdm(range(train_len)):
+    for _ in tqdm(range(train_len//1000)):
         i, batch = next(batches)
         loss = model(batch)
         loss.backward()
