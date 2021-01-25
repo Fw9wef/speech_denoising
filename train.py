@@ -26,8 +26,8 @@ for epoch_n in range(1, num_epochs+1):
     batches = enumerate(dataset)
     for _ in tqdm(range(train_len//1000)):
         i, batch = next(batches)
-        loss = model(Variable(batch['noisy']).to(device), Variable(batch['clean']).to(device),
-                     Variable(batch['src_pad_mask'].to(device)), Variable(batch['tgt_pad_mask'].to(device)))
+        loss = model(batch['noisy'].to(device), batch['clean'].to(device),
+                     batch['src_pad_mask'].to(device), batch['tgt_pad_mask'].to(device))
         loss.backward()
         optimizer.step()
         train_loss += loss.cpu().item()
@@ -36,7 +36,7 @@ for epoch_n in range(1, num_epochs+1):
     batches = enumerate(val_dataset)
     for _ in tqdm(range(val_len)):
         i, batch = next(batches)
-        _, loss = model.predict(Variable(batch['noisy'].to(device)), Variable(batch['clean'].to(device)))
+        _, loss = model.predict(batch['noisy'].to(device), batch['clean'].to(device))
         val_loss += loss.cpu().item()
 
     torch.save(model.state_dict(), path_to_model+str(epoch_n))
