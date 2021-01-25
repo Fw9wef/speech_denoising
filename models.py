@@ -82,11 +82,13 @@ class Model(nn.Module):
         tgt_pad_mask = 1 - tgt_pad_mask.float()
 
         loss = self.criterion(preds[:, :-1], tgt[:, 1:])
-        print(loss)
+        print(loss.size())
         loss = loss * tgt_pad_mask[:, 1:].unsqueeze(2)
+        print(loss.size())
         loss = loss.sum(dim=1).sum(dim=1) / tgt_pad_mask[:, 1:].sum(dim=1)
+        print(loss.size())
         loss = loss.mean()
-        print(loss)
+        print(loss.size())
 
         return loss
 
