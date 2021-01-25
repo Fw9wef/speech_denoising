@@ -66,11 +66,11 @@ class Model(nn.Module):
         self.criterion = nn.MSELoss(reduction='none')
 
     def forward(self, input):
-        src = self.pe(input['noisy'].transpose(1, 0))
-        tgt = self.pe(input['clean'].transpose(1, 0))
+        src = self.pe(input['noisy'].cuda().transpose(1, 0))
+        tgt = self.pe(input['clean'].cuda().transpose(1, 0))
 
-        tgt_pad_mask = input['tgt_pad_mask']
-        src_pad_mask = input['src_pad_mask']
+        tgt_pad_mask = input['tgt_pad_mask'].cuda()
+        src_pad_mask = input['src_pad_mask'].cuda()
         tgt_mask = self.transformer.generate_square_subsequent_mask(tgt.size(0))
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
@@ -85,7 +85,7 @@ class Model(nn.Module):
         return loss
 
     def predict(self, input):
-        src = self.pe(input['noisy'].transpose(1, 0))
+        src = self.pe(input['noisy'].cuda().transpose(1, 0))
         preds = self.transformer.fast_infer(src)
         preds = self.lin(preds)
 
