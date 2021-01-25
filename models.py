@@ -66,6 +66,7 @@ class Model(nn.Module):
         self.criterion = nn.MSELoss(reduction='none')
 
     def forward(self, input):
+        print(input['noisy'].size(), input['clean'].size())
         src = self.pe(input['noisy'])
         tgt = self.pe(input['clean'])
 
@@ -75,7 +76,6 @@ class Model(nn.Module):
 
         print(src.size(), tgt.size())
         print(tgt_pad_mask.size(), src_pad_mask.size())
-        print(tgt_mask.size())
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
                                  tgt_key_padding_mask=tgt_pad_mask)
