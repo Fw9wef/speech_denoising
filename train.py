@@ -12,7 +12,7 @@ model = Model().to(device)
 if len(gpu_ids) > 1:
     model = torch.nn.DataParallel(model, device_ids=gpu_ids)
 
-optimizer = torch.optim.Adam(model.parameters())
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.8)
 dataset = get_dataloader()
 train_len = len(dataset)
@@ -24,12 +24,11 @@ for epoch_n in range(1, num_epochs+1):
 
     train_loss = 0
     batches = enumerate(dataset)
-    for _ in tqdm(range(train_len//1000)):
+    for _ in tqdm(range(train_len)):
         i, batch = next(batches)
         loss = model(batch['noisy'].to(device), batch['clean'].to(device),
                      batch['src_pad_mask'].to(device), batch['tgt_pad_mask'].to(device))
         loss = loss.mean()
-        print(loss)
         loss.backward()
         optimizer.step()
         train_loss += loss.cpu().item()
