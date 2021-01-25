@@ -73,7 +73,7 @@ class Model(nn.Module):
     def forward(self, src, tgt, src_pad_mask, tgt_pad_mask):
         src = self.pe(src.transpose(1, 0))
         tgt = self.pe(tgt.transpose(1, 0))
-        tgt_mask = self.tgt_mask[:tgt.size(1), :tgt.size(1)]
+        tgt_mask = self.tgt_mask[:tgt.size(0), :tgt.size(0)]
         print(tgt.size(), tgt_mask.size())
 
         preds = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_pad_mask,
